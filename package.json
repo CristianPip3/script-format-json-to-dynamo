@@ -1,0 +1,16 @@
+{
+  "name": "FormaterJson",
+  "version": "1.0.0",
+  "description": "Small script format json to dynamo",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "CristianPip3",
+  "license": "ISC",
+  "dependencies": {
+    "dynamodb-data-types": "^3.0.1"
+  }
+}
