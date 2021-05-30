@@ -23,20 +23,17 @@ const cleanData = (item) => {
     if(isObject(valueProperty)){
       cleanData(valueProperty)
     }
-    if(isString(valueProperty) === stringEmpty){
-      item[property] = 'empty'
-    }
-    if(isNumber(valueProperty)){
+    if(isString(valueProperty) && valueProperty === stringEmpty){
       item[property] = 0
     }
   }
   return item
 }
 const isObject = (value) => {
-  return typeof value === "object" && value !== null;
+  return typeof value === 'object' && value !== null;
 }
 const isString = (text) => {
-  return typeof text === 'string' && text !== null;
+  return typeof text === 'string' && true;
 }
 const isNumber = (number) => {
   return Number.isInteger(number) && number !== null;
