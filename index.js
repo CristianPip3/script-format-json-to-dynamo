@@ -23,14 +23,23 @@ const cleanData = (item) => {
     if(isObject(valueProperty)){
       cleanData(valueProperty)
     }
-    if(valueProperty === stringEmpty){
+    if(isString(valueProperty) === stringEmpty){
       item[property] = 'empty'
+    }
+    if(isNumber(valueProperty)){
+      item[property] = 0
     }
   }
   return item
 }
 const isObject = (value) => {
   return typeof value === "object" && value !== null;
+}
+const isString = (text) => {
+  return typeof text === 'string' && text !== null;
+}
+const isNumber = (number) => {
+  return Number.isInteger(number) && number !== null;
 }
 const formatterJsonToDynamoDb = async (data) =>{
 
