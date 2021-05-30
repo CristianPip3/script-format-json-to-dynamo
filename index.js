@@ -68,7 +68,7 @@ const batchItemsDynamo = (items) =>{
   const lengthData = items.length
   let itemsRest = []
   let dataItems = []
-  const valueDiv = 9;
+  const valueDiv = 1;
   const parts = Math.trunc(lengthData/valueDiv)
   const rest = items.length % valueDiv;
   if(rest!==0){
