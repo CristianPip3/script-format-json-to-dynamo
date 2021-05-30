@@ -20,7 +20,7 @@ const cleanData = (item) => {
   const stringEmpty = ''
   for (const property in item) {
     const valueProperty = item[property];
-    if(isObject(item)){
+    if(isObject(valueProperty)){
       cleanData(valueProperty)
     }
     if(valueProperty === stringEmpty){
