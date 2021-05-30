@@ -12,9 +12,25 @@ const formatterJson = async() => {
     const oldKey = '%';
     delete Object.assign(item, {[newKey]: item[oldKey] })[oldKey];
     delete Object.assign(item, {[keyId]: item[keyOldEmpty] })[keyOldEmpty];
-    return item
+    return cleanData(item)
   })
   await formatterJsonToDynamoDb(items)
+}
+const cleanData = (item) => {
+  const stringEmpty = ''
+  for (const property in item) {
+    const valueProperty = item[property];
+    if(isObject(item)){
+      cleanData(valueProperty)
+    }
+    if(valueProperty === stringEmpty){
+      item[property] = 'empty'
+    }
+  }
+  return item
+}
+const isObject = (value) => {
+  return typeof value === "object" && value !== null;
 }
 const formatterJsonToDynamoDb = async (data) =>{
 
@@ -38,21 +54,19 @@ const formatterJsonToDynamoDb = async (data) =>{
     }
     const dataWrite = JSON.stringify(newData);
     await fs.promises.writeFile(`data-clean-${count}.json`, dataWrite);
-   count++
+    count++
   }
 
 }
 const batchItemsDynamo = (items) =>{
   const lengthData = items.length
-
   let itemsRest = []
   let dataItems = []
-  const valueDiv = 25;
+  const valueDiv = 9;
   const parts = Math.trunc(lengthData/valueDiv)
   const rest = items.length % valueDiv;
   if(rest!==0){
     const indexCopy = lengthData - rest;
-    console.log(indexCopy)
     itemsRest = items.slice(indexCopy);
     dataItems = [itemsRest];
     items.splice(indexCopy, rest)
