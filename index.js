@@ -16,7 +16,6 @@ const formatterJson = async() => {
   })
   await formatterJsonToDynamoDb(items)
 }
-
 const formatterJsonToDynamoDb = async (data) =>{
 
   const items = data.map((element) => {
@@ -31,17 +30,44 @@ const formatterJsonToDynamoDb = async (data) =>{
     const itemDynamo = attr.wrap(element)
     return { PutRequest: { Item: itemDynamo } }
   })
-
-  console.log(items.length)
-
-  const newData = {
-    coInspira: items
+  const allData = batchItemsDynamo(items);
+  let count = 0
+  for await (let allDatum of allData) {
+    const newData = {
+      coInspira: allDatum
+    }
+    const dataWrite = JSON.stringify(newData);
+    await fs.promises.writeFile(`data-clean-${count}.json`, dataWrite);
+   count++
   }
-  const dataWrite = JSON.stringify(newData);
-  await fs.promises.writeFile('data-dynamo.json', dataWrite);
+
+}
+const batchItemsDynamo = (items) =>{
+  const lengthData = items.length
+
+  let itemsRest = []
+  let dataItems = []
+  const valueDiv = 25;
+  const parts = Math.trunc(lengthData/valueDiv)
+  const rest = items.length % valueDiv;
+  if(rest!==0){
+    const indexCopy = lengthData - rest;
+    console.log(indexCopy)
+    itemsRest = items.slice(indexCopy);
+    dataItems = [itemsRest];
+    items.splice(indexCopy, rest)
+  }
+  return [...dataItems,...chunkArray(items,parts)]
+
+}
+const chunkArray = (array, parts) => {
+  let result = [];
+  for (let i = parts; i > 0; i--) {
+    result.push(array.splice(0, Math.ceil(array.length / i)));
+  }
+  return result;
 }
 const runScript = async () =>{
   await formatterJson()
 }
-
 runScript();
